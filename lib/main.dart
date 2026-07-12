@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/news_interaction_provider.dart';
 import 'screens/news_feed_screen.dart';
 
 void main() {
@@ -10,37 +12,40 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'InfoPulse News',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigo,
-          brightness: Brightness.light,
+    return ChangeNotifierProvider(
+      create: (_) => NewsInteractionProvider(),
+      child: MaterialApp(
+        title: 'InfoPulse News',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            brightness: Brightness.light,
+          ),
+          scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+          appBarTheme: const AppBarTheme(
+            centerTitle: false,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+          ),
         ),
-        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-        appBarTheme: const AppBarTheme(
-          centerTitle: false,
-          elevation: 0,
-          scrolledUnderElevation: 0,
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            brightness: Brightness.dark,
+          ),
+          scaffoldBackgroundColor: const Color(0xFF121212),
+          appBarTheme: const AppBarTheme(
+            centerTitle: false,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+          ),
         ),
+        themeMode: ThemeMode.system, // Cambia automáticamente según el tema del sistema
+        home: const NewsFeedScreen(),
       ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigo,
-          brightness: Brightness.dark,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        appBarTheme: const AppBarTheme(
-          centerTitle: false,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
-      ),
-      themeMode: ThemeMode.system, // Cambia automáticamente según el tema del sistema
-      home: const NewsFeedScreen(),
     );
   }
 }

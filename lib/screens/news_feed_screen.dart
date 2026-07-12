@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/article_model.dart';
+import '../providers/news_interaction_provider.dart';
 import '../services/news_service.dart';
 import '../widgets/category_selector.dart';
 import '../widgets/news_tile.dart';
+import 'favorites_screen.dart';
 
 class NewsFeedScreen extends StatefulWidget {
   const NewsFeedScreen({super.key});
@@ -81,6 +84,33 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                 const SnackBar(
                   content: Text('Búsqueda disponible en próximas actualizaciones'),
                   duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          Consumer<NewsInteractionProvider>(
+            builder: (context, provider, child) {
+              final count = provider.favoriteIds.length;
+              return Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Badge(
+                  label: Text(count.toString()),
+                  isLabelVisible: count > 0,
+                  backgroundColor: const Color(0xFFE91E63),
+                  textColor: Colors.white,
+                  child: IconButton(
+                    icon: const Icon(Icons.favorite_rounded),
+                    color: count > 0 ? const Color(0xFFE91E63) : null,
+                    tooltip: 'Mis Favoritos',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FavoritesScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },
