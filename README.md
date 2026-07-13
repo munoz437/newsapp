@@ -18,5 +18,8 @@ samples, guidance on mobile development, and a full API reference.
 
 
 flutter run --dart-define=NEWS_API_KEY=d4c19d76827f4659a8e59b05eb30d002
+flutter build apk --release --dart-define=NEWS_API_KEY=d4c19d76827f4659a8e59b05eb30d002
 flutter run -d emulator-5554
+
+flutter build apk --release --dart-define-from-file=dart_define.json
 
