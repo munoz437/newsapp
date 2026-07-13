@@ -116,27 +116,69 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  Future<void> _signInWithGoogle() async {
+Future<void> _signInWithGoogle() async {
+  setState(() {
+    _loading = true;
+    _errorMessage = null;
+    _emailNotVerified = false;
+  });
+
+  try {
+    // Obligatorio en google_sign_in 7.x
+    await GoogleSignIn.instance.initialize();
+
+    // Abre el selector de cuentas de Google
+    final GoogleSignInAccount googleUser =
+        await GoogleSignIn.instance.authenticate();
+
+    // Obtiene el token de Google
+    final GoogleSignInAuthentication googleAuth =
+        googleUser.authentication;
+
+    if (googleAuth.idToken == null) {
+      throw Exception('Google no devolvió un ID Token.');
+    }
+
+    // Convierte el token de Google en una credencial de Firebase
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+    );
+
+    // Inicia sesión en Firebase
+    await FirebaseAuth.instance.signInWithCredential(credential);
+  } on GoogleSignInException catch (e) {
+    debugPrint('GoogleSignInException: ${e.code}');
+    debugPrint('Detalles: $e');
+
+    if (!mounted) return;
+
     setState(() {
-      _loading = true;
-      _errorMessage = null;
-      _emailNotVerified = false;
+      _errorMessage = 'Error de Google: ${e.code}. Revisa la consola.';
     });
-    try {
-      final googleUser = await GoogleSignIn.instance.authenticate();
-      final googleAuth = googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
-      await FirebaseAuth.instance.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
-      setState(() => _errorMessage = _friendlyError(e));
-    } catch (_) {
-      setState(() => _errorMessage = 'Error al iniciar con Google.');
-    } finally {
-      if (mounted) setState(() => _loading = false);
+  } on FirebaseAuthException catch (e) {
+    debugPrint('FirebaseAuthException: ${e.code}');
+    debugPrint('Mensaje: ${e.message}');
+
+    if (!mounted) return;
+
+    setState(() {
+      _errorMessage = _friendlyError(e);
+    });
+  } catch (e, stackTrace) {
+    debugPrint('Error inesperado en Google Sign-In: $e');
+    debugPrintStack(stackTrace: stackTrace);
+
+    if (!mounted) return;
+
+    setState(() {
+      _errorMessage = 'Error al iniciar con Google: $e';
+    });
+  } finally {
+    if (mounted) {
+      setState(() => _loading = false);
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
