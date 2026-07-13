@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article_model.dart';
 import '../providers/news_interaction_provider.dart';
@@ -6,6 +6,7 @@ import '../services/news_service.dart';
 import '../widgets/category_selector.dart';
 import '../widgets/news_tile.dart';
 import 'favorites_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NewsFeedScreen extends StatefulWidget {
   const NewsFeedScreen({super.key});
@@ -19,7 +20,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
   String _selectedCategory = 'general';
   
   // Guardamos el Future en el estado para evitar que se vuelva a disparar 
-  // con cada reconstrucción del widget, y poder actualizarlo selectivamente.
+  // con cada reconstrucciÃ³n del widget, y poder actualizarlo selectivamente.
   late Future<List<Article>> _newsFuture;
 
   @override
@@ -48,7 +49,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
     try {
       await _newsFuture;
     } catch (_) {
-      // Ignoramos errores aquí ya que el FutureBuilder los manejará en la UI
+      // Ignoramos errores aquÃ­ ya que el FutureBuilder los manejarÃ¡ en la UI
     }
   }
 
@@ -82,7 +83,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Búsqueda disponible en próximas actualizaciones'),
+                  content: Text('BÃºsqueda disponible en prÃ³ximas actualizaciones'),
                   duration: Duration(seconds: 2),
                 ),
               );
@@ -115,6 +116,24 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
               );
             },
           ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) async {
+              if (value == 'signout') {
+                await FirebaseAuth.instance.signOut();
+              }
+            },
+            itemBuilder: (_) => [
+              const PopupMenuItem(
+                value: 'signout',
+                child: Row(children: [
+                  Icon(Icons.logout_rounded, size: 18),
+                  SizedBox(width: 8),
+                  Text('Cerrar sesion'),
+                ]),
+              ),
+            ],
+          ),
         ],
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -122,11 +141,11 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Título de sección de categorías
+          // TÃ­tulo de secciÃ³n de categorÃ­as
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 4),
             child: Text(
-              'Categorías',
+              'CategorÃ­as',
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.onSurfaceVariant,
@@ -134,7 +153,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
             ),
           ),
           
-          // Selector de categorías
+          // Selector de categorÃ­as
           CategorySelector(
             selectedCategory: _selectedCategory,
             onCategorySelected: _onCategoryChanged,
@@ -156,7 +175,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                         CircularProgressIndicator(),
                         SizedBox(height: 16),
                         Text(
-                          'Cargando últimas noticias...',
+                          'Cargando Ãºltimas noticias...',
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -179,7 +198,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Ocurrió un problema',
+                            'OcurriÃ³ un problema',
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -218,7 +237,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                 if (snapshot.hasData) {
                   final articles = snapshot.data!;
                   
-                  // Estado: Lista vacía
+                  // Estado: Lista vacÃ­a
                   if (articles.isEmpty) {
                     return RefreshIndicator(
                       onRefresh: _handleRefresh,
@@ -271,8 +290,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   );
                 }
 
-                // Fallback por defecto si nada coincide (no debería ocurrir)
-                return const Center(child: Text('Algo salió mal.'));
+                // Fallback por defecto si nada coincide (no deberÃ­a ocurrir)
+                return const Center(child: Text('Algo saliÃ³ mal.'));
               },
             ),
           ),

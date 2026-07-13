@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/article_model.dart';
@@ -49,7 +49,7 @@ class FavoritesScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Las noticias que marques como favoritas aparecerán aquí para leerlas más tarde.',
+                      'Las noticias que marques como favoritas aparecerÃ¡n aquÃ­ para leerlas mÃ¡s tarde.',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
@@ -82,7 +82,7 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                 ),
                 onDismissed: (direction) {
-                  // Guardamos una copia local para la opción Deshacer
+                  // Guardamos una copia local para la opciÃ³n Deshacer
                   final deletedArticle = article;
                   provider.removeFavorite(article.id);
                   
@@ -145,14 +145,14 @@ class FavoritesScreen extends StatelessWidget {
                               : _buildThumbnailFallback(theme),
                         ),
                         
-                        // Información
+                        // InformaciÃ³n
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Título
+                                // TÃ­tulo
                                 Text(
                                   article.title,
                                   maxLines: 2,
@@ -190,7 +190,7 @@ class FavoritesScreen extends StatelessWidget {
                           ),
                         ),
                         
-                        // Botón de eliminar
+                        // BotÃ³n de eliminar
                         IconButton(
                           icon: Icon(
                             Icons.delete_outline_rounded,
@@ -240,3 +240,4 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 }
+
