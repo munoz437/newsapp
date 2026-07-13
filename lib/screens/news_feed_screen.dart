@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article_model.dart';
 import '../providers/news_interaction_provider.dart';
@@ -7,6 +7,7 @@ import '../widgets/category_selector.dart';
 import '../widgets/news_tile.dart';
 import 'favorites_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'profile_screen.dart';
 
 class NewsFeedScreen extends StatefulWidget {
   const NewsFeedScreen({super.key});
@@ -116,23 +117,17 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
               );
             },
           ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) async {
-              if (value == 'signout') {
-                await FirebaseAuth.instance.signOut();
-              }
+          IconButton(
+            icon: const Icon(Icons.account_circle, size: 28),
+            tooltip: 'Mi Perfil',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ),
+              );
             },
-            itemBuilder: (_) => [
-              const PopupMenuItem(
-                value: 'signout',
-                child: Row(children: [
-                  Icon(Icons.logout_rounded, size: 18),
-                  SizedBox(width: 8),
-                  Text('Cerrar sesion'),
-                ]),
-              ),
-            ],
           ),
         ],
         elevation: 0,
@@ -145,7 +140,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 4),
             child: Text(
-              'CategorÃ­as',
+              'Categorías',
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.onSurfaceVariant,

@@ -1,6 +1,8 @@
-﻿import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'firebase_options.dart';
 import 'providers/news_interaction_provider.dart';
@@ -23,40 +25,93 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => NewsInteractionProvider(),
-      child: MaterialApp(
-        title: 'InfoPulse News',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.indigo,
-            brightness: Brightness.light,
+      child: InactivityWrapper(
+        child: MaterialApp(
+          title: 'InfoPulse News',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.indigo,
+              brightness: Brightness.light,
+            ),
+            scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+            appBarTheme: const AppBarTheme(
+              centerTitle: false,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+            ),
+            fontFamily: 'Roboto',
           ),
-          scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-          appBarTheme: const AppBarTheme(
-            centerTitle: false,
-            elevation: 0,
-            scrolledUnderElevation: 0,
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.indigo,
+              brightness: Brightness.dark,
+            ),
+            scaffoldBackgroundColor: const Color(0xFF121212),
+            appBarTheme: const AppBarTheme(
+              centerTitle: false,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+            ),
+            fontFamily: 'Roboto',
           ),
-          fontFamily: 'Roboto',
+          themeMode: ThemeMode.system,
+          home: const AuthGate(),
         ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.indigo,
-            brightness: Brightness.dark,
-          ),
-          scaffoldBackgroundColor: const Color(0xFF121212),
-          appBarTheme: const AppBarTheme(
-            centerTitle: false,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-          ),
-          fontFamily: 'Roboto',
-        ),
-        themeMode: ThemeMode.system,
-        home: const AuthGate(),
       ),
+    );
+  }
+}
+
+class InactivityWrapper extends StatefulWidget {
+  final Widget child;
+  const InactivityWrapper({super.key, required this.child});
+
+  @override
+  State<InactivityWrapper> createState() => _InactivityWrapperState();
+}
+
+class _InactivityWrapperState extends State<InactivityWrapper> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer(const Duration(minutes: 5), _handleInactivity);
+  }
+
+  void _handleInactivity() {
+    // Check if user is actually logged in before signing out
+    if (FirebaseAuth.instance.currentUser != null) {
+      FirebaseAuth.instance.signOut();
+    }
+  }
+
+  void _handleUserInteraction([_]) {
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: _handleUserInteraction,
+      onPointerMove: _handleUserInteraction,
+      onPointerUp: _handleUserInteraction,
+      child: widget.child,
     );
   }
 }
