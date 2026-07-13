@@ -84,7 +84,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('BÃºsqueda disponible en prÃ³ximas actualizaciones'),
+                  content: Text('Búsqueda disponible en próximas actualizaciones'),
                   duration: Duration(seconds: 2),
                 ),
               );
@@ -170,7 +170,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                         CircularProgressIndicator(),
                         SizedBox(height: 16),
                         Text(
-                          'Cargando Ãºltimas noticias...',
+                          'Cargando últimas noticias...',
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -193,7 +193,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'OcurriÃ³ un problema',
+                            'Ocurrió un problema',
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -285,8 +285,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   );
                 }
 
-                // Fallback por defecto si nada coincide (no deberÃ­a ocurrir)
-                return const Center(child: Text('Algo saliÃ³ mal.'));
+                // Fallback por defecto si nada coincide
+                return const Center(child: Text('Algo salió mal.'));
               },
             ),
           ),

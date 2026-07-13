@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../services/storage_service.dart';
 import 'favorites_screen.dart';
 
@@ -123,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                             if (currentPassword.isEmpty || newPassword.isEmpty) {
                               setStateDialog(() {
-                                errorMessage = 'Por favor ingresa ambas contraseÃ±as.';
+                                errorMessage = 'Por favor ingresa ambas contraseñas.';
                                 isLoading = false;
                               });
                               return;
@@ -131,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                             if (newPassword.length < 6) {
                               setStateDialog(() {
-                                errorMessage = 'La nueva contraseÃ±a debe tener al menos 6 caracteres.';
+                                errorMessage = 'La nueva contraseña debe tener al menos 6 caracteres.';
                                 isLoading = false;
                               });
                               return;
@@ -151,13 +152,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             if (context.mounted) {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('ContraseÃ±a actualizada exitosamente')),
+                                const SnackBar(content: Text('Contraseña actualizada exitosamente')),
                               );
                             }
                           } on FirebaseAuthException catch (e) {
                             setStateDialog(() {
                               if (e.code == 'invalid-credential' || e.code == 'wrong-password') {
-                                errorMessage = 'La contraseÃ±a actual es incorrecta.';
+                                errorMessage = 'La contraseña actual es incorrecta.';
                               } else {
                                 errorMessage = 'Error: ${e.message}';
                               }
@@ -165,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             });
                           } catch (e) {
                             setStateDialog(() {
-                              errorMessage = 'OcurriÃ³ un error inesperado.';
+                              errorMessage = 'Ocurrió un error inesperado.';
                               isLoading = false;
                             });
                           }
@@ -287,9 +288,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton.icon(
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
+              try {
+                await GoogleSignIn.instance.signOut();
+              } catch (_) {}
               if (context.mounted) {
-                // Return to previous screen (the gate handles redirect)
-                Navigator.pop(context);
+                // Return to root to trigger AuthGate redirect correctly
+                Navigator.of(context).popUntil((route) => route.isFirst);
               }
             },
             icon: const Icon(Icons.logout_rounded),
