@@ -79,17 +79,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Búsqueda disponible en próximas actualizaciones'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            },
-          ),
+
           Consumer<NewsInteractionProvider>(
             builder: (context, provider, child) {
               final count = provider.favoriteIds.length;

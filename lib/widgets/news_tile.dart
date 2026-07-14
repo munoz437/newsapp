@@ -7,10 +7,12 @@ import '../screens/news_detail_screen.dart';
 
 class NewsTile extends StatelessWidget {
   final Article article;
+  final EdgeInsetsGeometry? margin;
 
   const NewsTile({
     super.key,
     required this.article,
+    this.margin,
   });
 
   String _getRelativeTime(DateTime dateTime) {
@@ -42,7 +44,7 @@ class NewsTile extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Card(
-      margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+      margin: margin ?? const EdgeInsets.only(bottom: 16, left: 16, right: 16),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),

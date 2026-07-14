@@ -3,6 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../models/article_model.dart';
 import '../providers/news_interaction_provider.dart';
+import '../services/news_service.dart';
+import '../widgets/news_tile.dart';
 
 class NewsDetailScreen extends StatelessWidget {
   final Article article;
@@ -117,7 +119,6 @@ class NewsDetailScreen extends StatelessWidget {
                 ),
                 const Divider(height: 32),
                 
-                // Contenido principal
                 Text(
                   article.url != null 
                       ? 'Esta es una simulación del contenido detallado de la noticia. Para leer el artículo original, puedes visitar la fuente oficial de ${article.sourceName}.\n\nAquí se presentaría el texto completo de la noticia consumido desde el servidor o el scraper correspondiente. El diseño es responsivo y respeta los lineamientos visuales del sistema.'
@@ -127,6 +128,10 @@ class NewsDetailScreen extends StatelessWidget {
                     color: theme.colorScheme.onSurface.withAlpha(220),
                   ),
                 ),
+                
+                // Sección de noticias relacionadas
+                _RelatedNewsSection(currentArticleId: article.id),
+                
                 const SizedBox(height: 80), // Espacio para que el scroll libre la barra inferior
               ]),
             ),
@@ -289,6 +294,75 @@ class _InteractionButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _RelatedNewsSection extends StatefulWidget {
+  final String currentArticleId;
+
+  const _RelatedNewsSection({required this.currentArticleId});
+
+  @override
+  State<_RelatedNewsSection> createState() => _RelatedNewsSectionState();
+}
+
+class _RelatedNewsSectionState extends State<_RelatedNewsSection> {
+  final NewsService _newsService = NewsService();
+  late Future<List<Article>> _relatedNewsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Podríamos pasar una categoría si el Article la tuviera. Usamos top headlines generales por ahora.
+    _relatedNewsFuture = _newsService.getTopHeadlines();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return FutureBuilder<List<Article>>(
+      future: _relatedNewsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 48.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        
+        if (snapshot.hasError || !snapshot.hasData) {
+          return const SizedBox.shrink();
+        }
+
+        final relatedArticles = snapshot.data!
+            .where((a) => a.id != widget.currentArticleId)
+            .take(3)
+            .toList();
+
+        if (relatedArticles.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 48),
+            Text(
+              'Noticias relacionadas',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ...relatedArticles.map((article) => NewsTile(
+                  article: article,
+                  margin: const EdgeInsets.only(bottom: 16),
+                )).toList(),
+          ],
+        );
+      },
     );
   }
 }
