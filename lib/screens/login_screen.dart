@@ -126,7 +126,9 @@ Future<void> _signInWithGoogle() async {
 
   try {
     // Obligatorio en google_sign_in 7.x
-    await GoogleSignIn.instance.initialize();
+    await GoogleSignIn.instance.initialize(
+  serverClientId: '676907295918-d712f11bq3pmp0u7gr1tagl8vs3h0vgc.apps.googleusercontent.com',
+);
 
     // Abre el selector de cuentas de Google
     final GoogleSignInAccount googleUser =
