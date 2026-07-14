@@ -91,6 +91,9 @@ class _InactivityWrapperState extends State<InactivityWrapper> {
     // Check if user is actually logged in before signing out
     if (FirebaseAuth.instance.currentUser != null) {
       FirebaseAuth.instance.signOut();
+      try {
+        GoogleSignIn.instance.signOut();
+      } catch (_) {}
     }
   }
 

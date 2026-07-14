@@ -37,6 +37,11 @@ class _AuthGateState extends State<AuthGate> {
         setState(() {
           _biometricAuthenticated = false;
         });
+        // Garantizar al 100% que cualquier pantalla PUSHED (como el perfil o detalles) se cierre 
+        // para que AuthGate pueda renderizar la pantalla de login sin quedar oculta debajo.
+        if (mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
       } else {
         _checkBiometricConfiguration();
       }
