@@ -48,7 +48,7 @@ class FavoritesScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Las noticias que marques como favoritas aparecerÃ¡n aquÃ­ para leerlas mÃ¡s tarde.',
+                      'Las noticias que marques como favoritas aparecerán aquí para leerlas más tarde.',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
